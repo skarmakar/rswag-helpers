@@ -56,7 +56,8 @@ This gem adds some helper methods, custom rspec matchers and predefined security
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'rswag-helpers'
+# not yet published as a gem
+gem 'rswag-helpers', git: 'https://github.com/skarmakar/rswag-helpers.git'
 ```
 
 And then execute:
