@@ -22,15 +22,79 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This gem adds some helper methods to make rswag specs DRY and more readable. Install the gem:
 
-## Development
+    $ rails g rswag:helpers:install
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+This will 
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  1. create a folder `spec/schemas` and also create a file `spec/schemas/base` inside that folder
+  2. Modify the `spec/swagger_helper.rb` file to include the custom rspec matchers and rswag helpers
+  3. Provide predefined ways to define the security schemes like :bearer_jwt, :basic_http, :api_key
+  4. Also provides options to add additional security schemes, example:
 
-## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rswag-helpers.
+    # spec/swagger_helper.rb
+
+    Rswag::Helpers::SecurityScheme.defaults = :bearer_jwt
+    Rswag::Helpers::SecurityScheme.additional = {
+      accept: {
+        description: "Use application/[custom]; version=1",
+        type: :apiKey,
+        name: 'Accept',
+        in: :header
+      }
+    }
+
+### spec/schemas folder
+
+Keeping all the schemas in the `spec/swagger_helper.rb` can make the file very long and tough to maintain. It would be better
+if we can keep the schemas in multiple files. This gem does the setup for that, and creates the `spec/schemas` folder for that purpose. Now other schema files can reside inside that, and can be auto loaded to be used from `spec/swagger_helper.rb`
+
+Example schema:
+
+    # spec/schemas/post.rb
+
+    class Schemas::Post < Schemas::Base
+      class << self
+        def schema
+          @schema ||= {
+            type: :object,
+            properties: {
+              data: {
+                type: :object,
+                properties: {
+                  name: { type: :string, default: 'Cheese Bacon sandwich' },
+                  description: { type: :test, default: 'A great breakfast recipe!' },
+                }
+              }
+            }
+          }
+        end
+      end
+    end
+
+And use it:
+
+      # spec/swagger_helper.rb
+      
+      config.swagger_docs = {
+        'v1/swagger.yaml' => {
+          openapi: '3.0.3',
+          info: {
+            title: 'API Docs',
+            version: 'v1'
+          },
+          components: {
+            securitySchemes: Rswag::Helpers::SecurityScheme.get,
+            schemas: {
+              Post: Schemas::Post.schema,
+            },
+            security: Rswag::Helpers::SecurityScheme.security,
+            paths: {},
+            servers: []
+          }
+        }
+      }
+
 
