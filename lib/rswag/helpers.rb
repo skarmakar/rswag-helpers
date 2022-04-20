@@ -1,8 +1,9 @@
-require "rswag/helpers/version"
+require 'rswag/helpers/version'
+require 'rswag/helpers/schema'
+require 'rswag/helpers/request_spec_helpers'
+require 'rswag/helpers/rspec_matchers'
 
 module Rswag
   module Helpers
-    class Error < StandardError; end
-    # Your code goes here...
   end
 end

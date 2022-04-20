@@ -1,8 +1,7 @@
 module Rswag
-  module Schema
-    class Base
+  module Helpers
+    class Schema
       class << self
-        # default, override in subclasses if necessary
         def request_body
           @request_body ||= { data: extract_defaults(schema[:properties][:data][:properties]) }
         end
