@@ -1,8 +1,34 @@
 # Rswag::Helpers
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rswag/helpers`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem adds some helper methods, custom rspec matchers and predefined security schemes to make [Rswag](https://github.com/rswag/rswag) specs DRY and more readable.
 
-TODO: Delete this and the text above, and describe your gem
+  1. Create a helper method to remove redundant [Enable auto generation examples from responses](https://github.com/rswag/rswag#enable-auto-generation-examples-from-responses). So this code
+
+    get('list posts') do
+      response(200, 'successful') do
+
+        after do |example|
+          example.metadata[:response][:content] = {
+            'application/json' => {
+              example: JSON.parse(response.body, symbolize_names: true)
+            }
+          }
+        end
+        run_test!
+      end
+    end
+
+  can be replaced by
+
+    get('list posts') do
+      response(200, 'successful') do
+        run_test_and_generate_example!
+      end
+    end
+
+  2. Provides ability to define schemas in separate files - explained below
+  3. Adds a bunch of custom rspec matchers for better readability
+  4. Provides ability to use some predefined security schemes
 
 ## Installation
 
@@ -22,7 +48,7 @@ Or install it yourself as:
 
 ## Usage
 
-This gem adds some helper methods to make rswag specs DRY and more readable. Install the gem:
+Install the gem:
 
     $ rails g rswag:helpers:install
 
@@ -96,5 +122,4 @@ And use it:
           }
         }
       }
-
 
