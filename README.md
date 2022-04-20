@@ -33,6 +33,23 @@ This gem adds some helper methods, custom rspec matchers and predefined security
   2. Provides ability to define schemas in separate files - explained below
   3. Adds a bunch of custom rspec matchers for better readability
   4. Provides ability to use some predefined security schemes
+  5. Provides a helper method `define_tags` to replace the repetitive tag definition with `security scheme`, `consumes` and `produces`
+
+  ```ruby
+  tags 'Post'
+  security [bearer_auth: []]
+  consumes 'application/json'
+  produces 'application/json'
+  ```
+
+  can be replaced by
+
+  ```ruby
+  define_tags 'Posts'
+
+  # more customization
+  define_tags 'Posts', consumes: 'multipart/form-data'
+  ```
 
 ## Installation
 
