@@ -4,27 +4,31 @@ This gem adds some helper methods, custom rspec matchers and predefined security
 
   1. Create a helper method to remove redundant [Enable auto generation examples from responses](https://github.com/rswag/rswag#enable-auto-generation-examples-from-responses). So this code
 
-    get('list posts') do
-      response(200, 'successful') do
+  ```ruby
+  get('list posts') do
+    response(200, 'successful') do
 
-        after do |example|
-          example.metadata[:response][:content] = {
-            'application/json' => {
-              example: JSON.parse(response.body, symbolize_names: true)
-            }
+      after do |example|
+        example.metadata[:response][:content] = {
+          'application/json' => {
+            example: JSON.parse(response.body, symbolize_names: true)
           }
-        end
-        run_test!
+        }
       end
+      run_test!
     end
+  end
+  ```
 
   can be replaced by
 
-    get('list posts') do
-      response(200, 'successful') do
-        run_test_and_generate_example!
-      end
+  ```ruby
+  get('list posts') do
+    response(200, 'successful') do
+      run_test_and_generate_example!
     end
+  end
+  ```
 
   2. Provides ability to define schemas in separate files - explained below
   3. Adds a bunch of custom rspec matchers for better readability
@@ -59,18 +63,19 @@ This will
   3. Provide predefined ways to define the security schemes like :bearer_jwt, :basic_http, :api_key
   4. Also provides options to add additional security schemes, example:
 
+  ```ruby
+  # spec/swagger_helper.rb
 
-    # spec/swagger_helper.rb
-
-    Rswag::Helpers::SecurityScheme.defaults = :bearer_jwt
-    Rswag::Helpers::SecurityScheme.additional = {
-      accept: {
-        description: "Use application/[custom]; version=1",
-        type: :apiKey,
-        name: 'Accept',
-        in: :header
-      }
+  Rswag::Helpers::SecurityScheme.defaults = :bearer_jwt
+  Rswag::Helpers::SecurityScheme.additional = {
+    accept: {
+      description: "Use application/[custom]; version=1",
+      type: :apiKey,
+      name: 'Accept',
+      in: :header
     }
+  }
+  ```
 
 ### spec/schemas folder
 
@@ -79,47 +84,50 @@ if we can keep the schemas in multiple files. This gem does the setup for that, 
 
 Example schema:
 
-    # spec/schemas/post.rb
+  ```ruby
+  # spec/schemas/post.rb
 
-    class Schemas::Post < Schemas::Base
-      class << self
-        def schema
-          @schema ||= {
-            type: :object,
-            properties: {
-              data: {
-                type: :object,
-                properties: {
-                  name: { type: :string, default: 'Cheese Bacon sandwich' },
-                  description: { type: :test, default: 'A great breakfast recipe!' },
-                }
+  class Schemas::Post < Schemas::Base
+    class << self
+      def schema
+        @schema ||= {
+          type: :object,
+          properties: {
+            data: {
+              type: :object,
+              properties: {
+                name: { type: :string, default: 'Cheese Bacon sandwich' },
+                description: { type: :test, default: 'A great breakfast recipe!' },
               }
             }
           }
-        end
+        }
       end
     end
+  end
+  ```
 
 And use it:
 
-      # spec/swagger_helper.rb
-      
-      config.swagger_docs = {
-        'v1/swagger.yaml' => {
-          openapi: '3.0.3',
-          info: {
-            title: 'API Docs',
-            version: 'v1'
-          },
-          components: {
-            securitySchemes: Rswag::Helpers::SecurityScheme.get,
-            schemas: {
-              Post: Schemas::Post.schema,
-            },
-            security: Rswag::Helpers::SecurityScheme.security,
-            paths: {},
-            servers: []
-          }
-        }
+  ```ruby
+  # spec/swagger_helper.rb
+  
+  config.swagger_docs = {
+    'v1/swagger.yaml' => {
+      openapi: '3.0.3',
+      info: {
+        title: 'API Docs',
+        version: 'v1'
+      },
+      components: {
+        securitySchemes: Rswag::Helpers::SecurityScheme.get,
+        schemas: {
+          Post: Schemas::Post.schema,
+        },
+        security: Rswag::Helpers::SecurityScheme.security,
+        paths: {},
+        servers: []
       }
-
+    }
+  }
+  ```
