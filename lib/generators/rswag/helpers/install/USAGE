@@ -1,0 +1,9 @@
+Description:
+  Adds rswag-helpers files in the project
+
+Example:
+    rails g rswag:helpers:install
+
+    This will create:
+        spec/schemas
+        spec/schemas/base.rb
