@@ -188,7 +188,7 @@ And use it:
 
   ### Generate a schema
 
-      $ rails g rswag:schema [ResourceName]
+      $ rails g rswag:schema ResourceName
 
   Generates `spec/schemas/resource_name.rb` with the code:
 
