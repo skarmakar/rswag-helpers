@@ -1,0 +1,13 @@
+module Schemas
+  class <%= class_name %> < Base
+    class << self
+      def schema
+        @schema ||= {
+          type: :object,
+          properties: {
+          }
+        }
+      end
+    end
+  end
+end

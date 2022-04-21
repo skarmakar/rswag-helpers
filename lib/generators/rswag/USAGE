@@ -1,0 +1,8 @@
+Description:
+  Adds schema files in the project within rspec/schemas directory
+
+Example:
+    rails g rswag:schema [ClassName]
+
+    This will create:
+        spec/schemas/class_name.rb

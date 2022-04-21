@@ -76,8 +76,22 @@ Install the gem:
 
 This will 
 
-  1. create a folder `spec/schemas` and also create a file `spec/schemas/base` inside that folder
+  1. Create a folder `spec/schemas` and also create a file `spec/schemas/base` inside that folder
   2. Modify the `spec/swagger_helper.rb` file to include the custom rspec matchers and rswag helpers
+
+  ```ruby
+  # spec/swagger_helper.rb
+
+  # loads all the defined schema files
+  require_relative 'schemas/base'  
+
+  # Change to :api_key/:http_basic in case those are being used
+  # Can also provide multiple defaults like: [:bearer_jwt, :api_key]
+  # Can provide custom security scheme like: Rswag::Helpers::SecurityScheme.additional = { accept: {...}}
+  Rswag::Helpers::SecurityScheme.defaults = :bearer_jwt
+
+  ```
+
   3. Provide predefined ways to define the security schemes like :bearer_jwt, :basic_http, :api_key
   4. Also provides options to add additional security schemes, example:
 
@@ -114,7 +128,7 @@ Example schema:
             data: {
               type: :object,
               properties: {
-                name: { type: :string, default: 'Cheese Bacon sandwich' },
+                title: { type: :string, default: 'Cheese Bacon sandwich' },
                 description: { type: :test, default: 'A great breakfast recipe!' },
               }
             }
@@ -148,4 +162,48 @@ And use it:
       }
     }
   }
+  ```
+
+  These schema files are a subclass of `Schemas::Base` class for the purpose of loading a single file from the `spec/swagger_helper.rb`. Also, `Schemas::Base` is a subclass of `Rswag::Helpers::Schema` class present in the gem, which provides handy `request_body` method to extract the default values from the schema and construct the 
+  request body of POST/PUT requests. For an example:
+
+  ```ruby
+  post('create post') do
+    define_tags 'Post'
+
+    parameter name: :body, in: :body, schema: { '$ref' => '#/components/schemas/Post' }, required: true
+    # request_body method is present in the gem
+    let(:post_request_body) { Schemas::Post.request_body.deep_dup }
+
+    response(200, 'successful') do
+      let(:body) { post_request_body }
+
+      run_test_and_generate_example! do |response|
+        response_body = parsed_response(response, key: nil)
+        expect(response_body['data']['attributes']).to have_keys('title', 'description')
+      end
+    end
+  end
+  ```
+
+  ### Generate a schema
+
+      $ rails g rswag:schema [ResourceName]
+
+  Generates `spec/schemas/resource_name.rb` with the code:
+
+  ```ruby
+  module Schemas
+    class ResourceName < Base
+      class << self
+        def schema
+          @schema ||= {
+            type: :object,
+            properties: {
+            }
+          }
+        end
+      end
+    end
+  end
   ```
