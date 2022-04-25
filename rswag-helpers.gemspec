@@ -10,10 +10,8 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'rswag helper methods'
   spec.description   = 'This gem is going to add some helpers and custom matchers for rswag, which will make writing rswag specs easy'
-  spec.homepage      = 'https://github.com/skarmakar/rswag-helpers'
+  spec.homepage      = 'https://rubygems.org/rswag-helpers'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
-
-  spec.metadata['allowed_push_host'] = 'https://github.com/skarmakar/rswag-helpers'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
