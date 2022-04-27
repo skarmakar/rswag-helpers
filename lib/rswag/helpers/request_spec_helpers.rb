@@ -39,3 +39,14 @@ def define_tags(name, consumes: 'application/json', produces: 'application/json'
   consumes consumes
   produces produces
 end
+
+# wrap the verbose schema definition in a method, as by convention
+# schemas are expected to defined within /components/schemas in swagger_helper.rb 
+def schema_ref(name)
+  schema '$ref': "#/components/schemas/#{name}"
+end
+
+# wrap the verbose schema option in a method
+def schema_option(name)
+  { '$ref' => "#/components/schemas/#{name}" }
+end
