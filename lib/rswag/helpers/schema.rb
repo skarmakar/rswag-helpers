@@ -25,7 +25,7 @@ module Rswag
         def extract_defaults(hash)
           {}.tap do |h|
             hash.each do |k, v|
-              h[k] = v[:default]
+              h[k] = v[:default] || v[:example]
             end
           end
         end

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rswag-helpers (0.1.2)
+    rswag-helpers (0.1.3)
 
 GEM
   remote: https://rubygems.org/
