@@ -42,8 +42,17 @@ end
 
 # wrap the verbose schema definition in a method, as by convention
 # schemas are expected to defined within /components/schemas in swagger_helper.rb 
+# example: schema_ref 'Something' will generate schema `'$ref': '#/components/schemas/Something'`
+# example: schema_ref anyOf: ['Something', 'SomethingElse'] 
+#   will generate schema schema anyOf: [{ '$ref' => '#/components/schemas/Something' }, { '$ref' => '#/components/schemas/SomethingElse' }]
+# Use anyOf or oneOf or allOf
 def schema_ref(name)
-  schema '$ref': "#/components/schemas/#{name}"
+  if name.is_a?(String)
+    schema '$ref': "#/components/schemas/#{name}"
+  elsif %i[anyOf oneOf allOf].any? { |k| name.key?(k) }
+    schema_names = name.values.flatten.collect { |schema_name| { '$ref' => "#/components/schemas/#{schema_name}" }}
+    schema name.keys.first => schema_names
+  end
 end
 
 # wrap the verbose schema option in a method

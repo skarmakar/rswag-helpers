@@ -51,6 +51,36 @@ This gem adds some helper methods, custom rspec matchers and predefined security
   define_tags 'Posts', consumes: 'multipart/form-data'
   ```
 
+  6. Provides a helper method `schema_ref` which can take a string argument to replace declarative schema reference
+
+  ```ruby
+  schema '$ref' => '#/components/schemas/Something'
+  # can be replace by
+  schema_ref 'Something'
+  
+  schema anyOf: [{ '$ref' => '#/components/schemas/Something' }, { '$ref' => '#/components/schemas/SomethingElse' }]
+  # can be replaced by
+  schema_ref anyOf: ['Something', 'SomethingElse']
+
+  schema oneOf: [{ '$ref' => '#/components/schemas/Something' }, { '$ref' => '#/components/schemas/SomethingElse' }]
+  # can be replaced by
+  schema_ref oneOf: ['Something', 'SomethingElse']
+
+  schema allOf: [{ '$ref' => '#/components/schemas/Something' }, { '$ref' => '#/components/schemas/SomethingElse' }]
+  # can be replaced by
+  schema_ref allOf: ['Something', 'SomethingElse']
+
+  ```
+
+  7. Provides another helper method `schema_option` to make the schema declaration for a request short (trivial, but still less code)
+
+  ```ruby
+  parameter name: :payload, in: :body, schema: { '$ref' => '#/components/schemas/Something' }
+  # can be replaced by
+  parameter name: :payload, in: :body, schema: schema_option('Something')
+  
+  ```
+
 ## Installation
 
 Add this line to your application's Gemfile:
