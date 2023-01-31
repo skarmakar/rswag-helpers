@@ -4,11 +4,13 @@ require 'rspec/expectations'
 
 RSpec::Matchers.define :have_keys do |*expected, within: nil|
   match do |actual|
-    if actual.is_a?(Array)
-      actual.each { |obj| (within ? obj[within.to_s] : obj).keys.sort == expected.sort }
+    actual_keys = if actual.is_a?(Array)
+      actual.each { |obj| (within ? obj[within.to_s] : obj).keys }
     else
-      (within ? actual[within.to_s] : actual).keys.sort == expected.sort
+      (within ? actual[within.to_s] : actual).keys
     end
+
+    actual_keys.sort == expected.flatten.sort
   end
 end
 
