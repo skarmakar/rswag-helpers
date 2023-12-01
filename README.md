@@ -183,13 +183,13 @@ And use it:
       components: {
         securitySchemes: Rswag::Helpers::SecurityScheme.get,
         schemas: {
-          Post: Schemas::Post.schema,
-        },
-        security: Rswag::Helpers::SecurityScheme.security,
-        paths: {},
-        servers: []
+          Post: Schemas::Post.schema
+        }
       }
-    }
+      security: Rswag::Helpers::SecurityScheme.security,
+      paths: {},
+      servers: []
+      }
   }
   ```
 
